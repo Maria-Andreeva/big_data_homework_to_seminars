@@ -1,0 +1,30 @@
+CREATE TABLE airbnb_data (
+    id INT,
+    name STRING,
+    host_id INT,
+    host_name STRING,
+    neighbourhood_group STRING,
+    neighbourhood STRING,
+    latitude FLOAT,
+    longitude FLOAT,
+    room_type STRING,
+    price FLOAT,
+    minimum_nights INT,
+    number_of_reviews INT,
+    last_review STRING,
+    reviews_per_month FLOAT,
+    calculated_host_listings_count INT,
+    availability_365 INT
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE;
+
+LOAD DATA LOCAL INPATH 'data_without_header.csv' INTO TABLE airbnb_data;
+
+SELECT 
+    AVG(price) AS mean_price,
+    VAR_POP(price) AS variance_price
+FROM airbnb_data;
+
+

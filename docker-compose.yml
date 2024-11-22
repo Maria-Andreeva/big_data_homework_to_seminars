@@ -1,0 +1,40 @@
+services:
+  hadoop:
+    image: bde2020/hadoop-base:latest
+    container_name: hadoop
+    environment:
+      - CLUSTER_NAME=hadoop-cluster
+    ports:
+      - "50070:50070"   # HDFS Web UI
+      - "8088:8088"     # YARN Web UI
+    networks:
+      - hadoop-net
+    volumes:
+      - ./data:/data
+
+  hdfs:
+    image: bde2020/hadoop-hdfs-namenode:latest
+    container_name: hdfs
+    environment:
+      - CLUSTER_NAME=hadoop-cluster
+    ports:
+      - "9870:9870"  # HDFS Web UI
+    networks:
+      - hadoop-net
+    depends_on:
+      - hadoop
+
+  hive:
+    image: bde2020/hive-metastore:latest
+    container_name: hive
+    environment:
+      - HIVE_METASTORE_URI=thrift://hive-metastore:9083
+      - HIVE_SERVER2_THRIFT_PORT=10000
+    networks:
+      - hadoop-net
+    depends_on:
+      - hdfs
+
+networks:
+  hadoop-net:
+    driver: bridge
